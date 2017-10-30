@@ -3,13 +3,83 @@
  
 <head>
   <meta charset="utf-8" />
+  <script src='http://d3js.org/d3.v4.js'></script>
+  <!-- <script src="https://unpkg.com/redux@latest/dist/redux.min.js"></script> -->
+  <script src='dataset.js'></script>
   <title></title>
 </head>
  
 <body>
   <div id="container"></div>
- 
-  <script src="build/myCode.js"></script>
+  <script type="text/javascript">
+  var data = d3.hierarchy(root)
+  var test = {
+  "name": "Eve",
+  "children": [
+    {
+      "name": "Cain"
+    },
+    {
+      "name": "Seth",
+      "children": [
+        {
+          "name": "Enos"
+        },
+        {
+          "name": "Noam"
+        }
+      ]
+    },
+    {
+      "name": "Abel"
+    },
+    {
+      "name": "Awan",
+      "children": [
+        {
+          "name": "Enoch"
+        }
+      ]
+    },
+    {
+      "name": "Azura"
+    }
+  ]
+}
+  var svg = d3.select('#container').append('svg').attr('width',2000).attr('height',2000)
+  var tree = d3.cluster().size([1000,150]).separation(function(a, b) {
+  return a.parent == b.parent ? 1 : 1;
+})
+  test = d3.hierarchy(test)
+  tree(data)
+  var g = svg.append('g')
+  var barg = svg.append('g').attr('transform',(d)=>d3.zoomIdentity.translate(0,150))
+  // var nodes = g.selectAll('g')
+  //          .data(test.descendants())
+  //          .enter()
+  //          .append('g')
+  //          .attr('transform',(d)=>d3.zoomIdentity.translate(d.x,d.y))
+  
+  // nodes.append('circle').attr('r',10)
+
+  var links = g.selectAll('path')
+  			  .data(data.descendants().slice(1))
+           	  .enter()
+              .append('path')
+              .attr('d',function(d){
+              	let linkd = ( d.children && d.children.length > 1 )?'M'+d.children[0].x+','+(d.y)+'L'+d.children[1].x+','+(d.y):'';
+              	return 'M'+d.x+','+(d.y)+'L'+d.x+','+(d.parent.y)+' '+linkd;
+              })
+              .attr('fill','none')
+              .attr('stroke','#000000')
+              .attr('stroke-width','1px')
+
+   barg.append('path').attr('d','M 0,0 L 1000,0').attr('fill','none')
+              .attr('stroke','#000000')
+              .attr('stroke-width','1px')           
+              
+  </script>
 </body>
+
  
 </html>
