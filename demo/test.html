@@ -13,9 +13,10 @@
 <body>
   <div id="container"></div>
   <script type="text/javascript">
-  var data = d3.hierarchy(roots)
+  var data = d3.hierarchy(rowsDendrogram)
   
   var hm = heatMap.bindData(dataset).setContainer('container')
+  hm()
 //   var test = {
 //   "name": "Eve",
 //   "children": [

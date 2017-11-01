@@ -18848,13 +18848,12 @@ module.exports = getIteratorFn;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
-exports.Cell = undefined;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _react = __webpack_require__(139);
 
@@ -18877,118 +18876,198 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var linksStyle = { stroke: '#000000', strokeWidth: '1px', fill: 'none' };
+var textStyle = { textAnchor: 'start', dominantBaseline: 'middle', fill: '#000000' };
 
-var Node = function Node(props) {
-  var d = props.data.children ? utility.drawBraceLine({ x: 0, y: 0 }, props.data.children.map(function (t) {
-    return { x: t.x - props.data.x, y: t.y - props.data.y };
-  })) : '';
-  return _react2.default.createElement(
-    'g',
-    { transform: utility.tranSlate(props.data.x, props.data.y) },
-    _react2.default.createElement('path', { d: d, style: linksStyle }),
-    _react2.default.createElement('circle', { r: 0.5 })
-  );
-};
+var Cellframe = function Cellframe(props) {
 
-var Dendrogram = function Dendrogram(props) {
-
-  var nodes = props.data.descendants().map(function (node, index) {
-    return _react2.default.createElement(Node, { key: index, data: node });
-  });
-
-  return _react2.default.createElement(
-    'g',
-    { transform: props.transform },
-    nodes
-  );
-};
-
-var Cell = exports.Cell = function (_React$Component) {
-  _inherits(Cell, _React$Component);
-
-  function Cell() {
-    _classCallCheck(this, Cell);
-
-    return _possibleConstructorReturn(this, (Cell.__proto__ || Object.getPrototypeOf(Cell)).apply(this, arguments));
-  }
-
-  _createClass(Cell, [{
-    key: 'render',
-
-
-    // componentDidMount() {
-    //     this.tCell.addEventListener('click', this.props.onClick );
-
-    // }
-
-    // componentWillUnmount(){
-    //     this.tCell.removeEventListener('click', this.props.onClick );
-
-    // }
-
-
-    value: function render() {
-      var _this2 = this;
-
-      var attrs = { d: utility.drawRect(this.props.width, this.props.height), fill: this.props.bgColor, stroke: 'none'
-        // let textstyle = (this.props.text && this.props.text.length > 0)?{...textStyle,fontSize:fontSize(this.props.text,this.props.width)}:textStyle;
-      };return _react2.default.createElement(
+    var fontSize = Math.min(Math.floor(props.frame.width) * 1, 16);
+    var stroke = props.selected ? '#fff6b2' : 'none';
+    return _react2.default.createElement(
         'g',
-        { ref: function ref(_ref) {
-            return _this2.tCell = _ref;
-          }, transform: utility.tranSlate(this.props.x, this.props.y) },
-        _react2.default.createElement('path', attrs)
-      );
-    }
-  }]);
+        null,
+        _react2.default.createElement('rect', _extends({ transform: utility.tranSlate(0 - props.frame.width / 2, 0) }, _extends({}, props.frame, { stroke: stroke }))),
+        _react2.default.createElement(
+            'text',
+            { transform: utility.tranSlate(0, props.frame.height) + 'rotate(90)', style: _extends({}, textStyle, { fontSize: fontSize }) },
+            props.text
+        )
+    );
+};
 
-  return Cell;
+var Node = function (_React$Component) {
+    _inherits(Node, _React$Component);
+
+    function Node() {
+        _classCallCheck(this, Node);
+
+        return _possibleConstructorReturn(this, (Node.__proto__ || Object.getPrototypeOf(Node)).apply(this, arguments));
+    }
+
+    _createClass(Node, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.nodeCircle.addEventListener('click', this.props.onClick);
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            this.nodeCircle.removeEventListener('click', this.props.onClick);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var d = this.props.data.children ? utility.drawBraceLine({ x: 0, y: 0 }, this.props.data.children.map(function (t) {
+                return { x: t.x - _this2.props.data.x, y: t.y - _this2.props.data.y };
+            })) : '';
+            return _react2.default.createElement(
+                'g',
+                { transform: utility.tranSlate(this.props.data.x, this.props.data.y) },
+                _react2.default.createElement('path', { d: d, style: linksStyle }),
+                !this.props.data.children && _react2.default.createElement(Cellframe, { frame: this.props.frame, text: this.props.data.data.text, selected: this.props.selected }),
+                _react2.default.createElement('circle', { ref: function ref(_ref) {
+                        return _this2.nodeCircle = _ref;
+                    }, r: 2 })
+            );
+        }
+    }]);
+
+    return Node;
+}(_react2.default.Component);
+
+var Dendrogram = function (_React$Component2) {
+    _inherits(Dendrogram, _React$Component2);
+
+    function Dendrogram(props) {
+        _classCallCheck(this, Dendrogram);
+
+        var _this3 = _possibleConstructorReturn(this, (Dendrogram.__proto__ || Object.getPrototypeOf(Dendrogram)).call(this, props));
+
+        _this3.state = { selected: [] };
+        return _this3;
+    }
+
+    _createClass(Dendrogram, [{
+        key: 'selectNode',
+        value: function selectNode(node) {
+            // console.log(node)
+            this.setState({ selected: node.leaves() });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this4 = this;
+
+            var nodes = this.props.data.descendants().map(function (node, index) {
+                return _react2.default.createElement(Node, { key: index, onClick: function onClick() {
+                        return _this4.selectNode(node);
+                    }, data: node, frame: _this4.props.frame, selected: _this4.state.selected.includes(node) ? true : false });
+            });
+
+            return _react2.default.createElement(
+                'g',
+                { transform: this.props.transform },
+                nodes
+            );
+        }
+    }]);
+
+    return Dendrogram;
+}(_react2.default.Component);
+
+var Cell = function (_React$Component3) {
+    _inherits(Cell, _React$Component3);
+
+    function Cell() {
+        _classCallCheck(this, Cell);
+
+        return _possibleConstructorReturn(this, (Cell.__proto__ || Object.getPrototypeOf(Cell)).apply(this, arguments));
+    }
+
+    _createClass(Cell, [{
+        key: 'render',
+
+
+        // componentDidMount() {
+        //     this.tCell.addEventListener('click', this.props.onClick );
+
+        // }
+
+        // componentWillUnmount(){
+        //     this.tCell.removeEventListener('click', this.props.onClick );
+
+        // }
+
+
+        value: function render() {
+            var _this6 = this;
+
+            var attrs = { d: utility.drawRect(this.props.width, this.props.height), fill: this.props.bgColor, stroke: 'none'
+                // let textstyle = (this.props.text && this.props.text.length > 0)?{...textStyle,fontSize:fontSize(this.props.text,this.props.width)}:textStyle;
+            };return _react2.default.createElement(
+                'g',
+                { ref: function ref(_ref2) {
+                        return _this6.tCell = _ref2;
+                    }, transform: utility.tranSlate(this.props.x, this.props.y) },
+                _react2.default.createElement('path', attrs)
+            );
+        }
+    }]);
+
+    return Cell;
 }(_react2.default.Component);
 
 var Heatdata = function Heatdata(props) {
 
-  var cells = props.data.map(function (d, index) {
-    return _react2.default.createElement(Cell, _extends({ key: index }, d));
-  });
+    var cells = props.data.map(function (d, index) {
+        return _react2.default.createElement(Cell, _extends({ key: index }, d));
+    });
 
-  return _react2.default.createElement(
-    'g',
-    { transform: props.transform },
-    cells
-  );
+    return _react2.default.createElement(
+        'g',
+        { transform: props.transform },
+        cells
+    );
 };
 
 var Heatmap = function Heatmap(props) {
 
-  var rowDendrogramData = utility.dendrogram(props.dataset.rows, props.height * 0.65, props.width * 0.20);
-  var colDendrogramData = utility.dendrogram(props.dataset.cols, props.width * 0.65, props.height * 0.20);
-  var xMap = colDendrogramData.leaves().reduce(function (acc, d) {
-    acc[d.data.label] = d.x;return acc;
-  }, {});
-  var yMap = rowDendrogramData.leaves().reduce(function (acc, d) {
-    acc[+d.data.label] = props.height * 0.65 - d.x;return acc;
-  }, {});
-  var heatValues = props.dataset.values.reduce(function (acc, t) {
-    return [].concat(_toConsumableArray(acc), _toConsumableArray(Object.keys(xMap).map(function (k) {
-      return t[k];
-    })));
-  }, []);
-  var color = utility.colorFn(heatValues);
-  var cellHeight = props.height * 0.65 / rowDendrogramData.leaves().length;
-  var cellWidth = props.width * 0.65 / colDendrogramData.leaves().length;
-  var cellsData = props.dataset.values.reduce(function (acc, d, index) {
-    return [].concat(_toConsumableArray(acc), _toConsumableArray(Object.keys(xMap).map(function (t) {
-      return { width: cellWidth, height: cellHeight, x: xMap[t], y: yMap[index], bgColor: color(d[t]) };
-    })));
-  }, []);
+    var rowDendrogramData = utility.dendrogram(props.dataset.rows, props.height * 0.65, props.width * 0.20).each(function (n) {
+        if (n.data.label) n.data.text = props.dataset.values[+n.data.label].compound;
+    });
+    var colDendrogramData = utility.dendrogram(props.dataset.cols, props.width * 0.65, props.height * 0.20).each(function (n) {
+        if (n.data.label) n.data.text = n.data.label;
+    });
+    var xMap = colDendrogramData.leaves().reduce(function (acc, d) {
+        acc[d.data.label] = d.x;return acc;
+    }, {});
+    var yMap = rowDendrogramData.leaves().reduce(function (acc, d) {
+        acc[+d.data.label] = props.height * 0.65 - d.x;return acc;
+    }, {});
+    var heatValues = props.dataset.values.reduce(function (acc, t) {
+        return [].concat(_toConsumableArray(acc), _toConsumableArray(Object.keys(xMap).map(function (k) {
+            return t[k];
+        })));
+    }, []);
+    var color = utility.colorFn(heatValues);
+    var cellHeight = props.height * 0.65 / rowDendrogramData.leaves().length;
+    var cellWidth = props.width * 0.65 / colDendrogramData.leaves().length;
+    var cellsData = props.dataset.values.reduce(function (acc, d, index) {
+        return [].concat(_toConsumableArray(acc), _toConsumableArray(Object.keys(xMap).map(function (t) {
+            return { width: cellWidth, height: cellHeight, x: xMap[t], y: yMap[index], bgColor: color(d[t]) };
+        })));
+    }, []);
+    var colFrame = { width: cellWidth, height: props.height * 0.65, fill: 'none' };
+    var rowFrame = { width: cellHeight, height: props.width * 0.65, fill: 'none' };
 
-  return _react2.default.createElement(
-    'svg',
-    { width: props.width, height: props.height },
-    _react2.default.createElement(Dendrogram, { key: 0, data: colDendrogramData, transform: utility.tranSlate(props.width * 0.20, 0) }),
-    _react2.default.createElement(Dendrogram, { key: 1, data: rowDendrogramData, transform: utility.tranSlate(0, props.height * 0.85) + 'rotate(-90)' }),
-    _react2.default.createElement(Heatdata, { data: cellsData, transform: utility.tranSlate(props.width * 0.20, props.height * 0.20) })
-  );
+    return _react2.default.createElement(
+        'svg',
+        { width: props.width, height: props.height },
+        _react2.default.createElement(Heatdata, { data: cellsData, transform: utility.tranSlate(props.width * 0.20, props.height * 0.20) }),
+        _react2.default.createElement(Dendrogram, { key: 0, data: colDendrogramData, transform: utility.tranSlate(props.width * 0.20, 0), frame: colFrame }),
+        _react2.default.createElement(Dendrogram, { key: 1, data: rowDendrogramData, transform: utility.tranSlate(0, props.height * 0.85) + 'rotate(-90)', frame: rowFrame })
+    );
 };
 
 exports.default = Heatmap;
