@@ -6,14 +6,16 @@ var DEV = path.resolve(__dirname, "dev");
 var OUTPUT = path.resolve(__dirname, "build");
 
 var config = {
-  entry: CV  + "/index.jsx",
+  entry: SRC  + "/index.jsx",
   output: {
-    path: OUTPUT,
-    filename: "myCode.js"
+    path:OUTPUT,
+    library:'heatMap',
+    libraryTarget:'umd',
+    filename:'myCode.js'
   },
   module: {
     loaders: [{
-        include: CV,
+        include: SRC,
         loader: "babel-loader",
         query: {
                      presets: ['es2015','stage-2']

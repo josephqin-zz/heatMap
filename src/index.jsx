@@ -6,7 +6,7 @@ import Heatmap from './component/Heatmap.jsx'
 // import { createStore } from 'redux'
 
 var width = 1000,
-	height = 500,
+	height = 1000,
 	dataset = {},
 	containerID = null,
 	entriesNum = 10;
@@ -31,7 +31,7 @@ renderModule.setContainer = function(data){
 
 renderModule.bindData = function(data){
 	if(!arguments.length) return dataset;
-	dataset = Obejct.assign({},data);
+	dataset = Object.assign({},data);
 	return this;
 }
 

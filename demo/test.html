@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html>
  
 <head>
@@ -6,79 +6,82 @@
   <script src='http://d3js.org/d3.v4.js'></script>
   <!-- <script src="https://unpkg.com/redux@latest/dist/redux.min.js"></script> -->
   <script src='dataset.js'></script>
+  <script src='../build/myCode.js'></script>
   <title></title>
 </head>
  
 <body>
   <div id="container"></div>
   <script type="text/javascript">
-  var data = d3.hierarchy(root)
-  var test = {
-  "name": "Eve",
-  "children": [
-    {
-      "name": "Cain"
-    },
-    {
-      "name": "Seth",
-      "children": [
-        {
-          "name": "Enos"
-        },
-        {
-          "name": "Noam"
-        }
-      ]
-    },
-    {
-      "name": "Abel"
-    },
-    {
-      "name": "Awan",
-      "children": [
-        {
-          "name": "Enoch"
-        }
-      ]
-    },
-    {
-      "name": "Azura"
-    }
-  ]
-}
-  var svg = d3.select('#container').append('svg').attr('width',2000).attr('height',2000)
-  var tree = d3.cluster().size([-1000,150]).separation(function(a, b) {
-  return a.parent == b.parent ? 1 : 1;
-})
-  test = d3.hierarchy(test)
-  tree(data)
-  var g = svg.append('g')
-  var barg = svg.append('g').attr('transform',(d)=>d3.zoomIdentity.translate(150,0))
-  var nodes = g.selectAll('g')
-           .data(data.descendants())
-           .enter()
-           .append('g')
-           .attr('transform',(d)=>d3.zoomIdentity.translate(d.x,d.y))
+  var data = d3.hierarchy(roots)
   
-  nodes.append('circle').attr('r',1)
-  nodes.append('text').text((d)=>isNaN(+d.data.label)?'':heatMapData[+d.data.label].compound).style('text-anchor','start').style('font-size','.7em').attr('dy',3).attr('transform','rotate(90)')
-
-  var drawLine = (sourse,target) => 'M'+sourse.x+','+sourse.y+' L '+target.x+','+target.y;
+  var hm = heatMap.bindData(dataset).setContainer('container')
+//   var test = {
+//   "name": "Eve",
+//   "children": [
+//     {
+//       "name": "Cain"
+//     },
+//     {
+//       "name": "Seth",
+//       "children": [
+//         {
+//           "name": "Enos"
+//         },
+//         {
+//           "name": "Noam"
+//         }
+//       ]
+//     },
+//     {
+//       "name": "Abel"
+//     },
+//     {
+//       "name": "Awan",
+//       "children": [
+//         {
+//           "name": "Enoch"
+//         }
+//       ]
+//     },
+//     {
+//       "name": "Azura"
+//     }
+//   ]
+// }
+//   var svg = d3.select('#container').append('svg').attr('width',2000).attr('height',2000)
+//   var tree = d3.cluster().size([1000,150]).separation(function(a, b) {
+//   return a.parent == b.parent ? 1 : 1;
+// })
+//   test = d3.hierarchy(test)
+//   tree(data)
+//   var g = svg.append('g')
+//   var barg = svg.append('g').attr('transform',(d)=>d3.zoomIdentity.translate(150,0))
+//   var nodes = g.selectAll('g')
+//            .data(data.descendants())
+//            .enter()
+//            .append('g')
+//            .attr('transform',(d)=>d3.zoomIdentity.translate(d.x,d.y))
   
-  var drawBraceLine = (node,nodes) => drawLine({y:node.y,x:d3.max(nodes.map((d)=>d.x))},{y:node.y,x:d3.min(nodes.map((d)=>d.x))})+nodes.map((d)=>drawLine({y:node.y,x:d.x},d)).join('')
+//   nodes.append('circle').attr('r',1)
+//   nodes.append('text').text((d)=>isNaN(+d.data.label)?'':heatMapData[+d.data.label].compound).style('text-anchor','start').style('font-size','.7em').attr('dy',3).attr('transform','rotate(90)')
+
+//   var drawLine = (sourse,target) => 'M'+sourse.x+','+sourse.y+' L '+target.x+','+target.y;
+  
+//   var drawBraceLine = (node,nodes) => drawLine({y:node.y,x:d3.max(nodes.map((d)=>d.x))},{y:node.y,x:d3.min(nodes.map((d)=>d.x))})+nodes.map((d)=>drawLine({y:node.y,x:d.x},d)).join('')
 
   
 
- nodes.append('path')
-              .attr('d',(d)=>d.children?drawBraceLine({x:0,y:0},d.children.map((t)=>({x:t.x-d.x,y:t.y-d.y}))):'')
-              .attr('fill','none')
-              .attr('stroke','#000000')
-              .attr('stroke-width','1px')
+//  nodes.append('path')
+//               .attr('d',(d)=>d.children?drawBraceLine({x:0,y:0},d.children.map((t)=>({x:t.x-d.x,y:t.y-d.y}))):'')
+//               .attr('fill','none')
+//               .attr('stroke','#000000')
+//               .attr('stroke-width','1px')
              
 
-   // barg.append('path').attr('d','M 0,0 L 0,1000').attr('fill','none')
-   //            .attr('stroke','#000000')
-   //            .attr('stroke-width','1px')           
+//    // barg.append('path').attr('d','M 0,0 L 0,1000').attr('fill','none')
+//    //            .attr('stroke','#000000')
+//    //            .attr('stroke-width','1px')           
               
   </script>
 </body>
