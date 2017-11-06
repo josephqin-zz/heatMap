@@ -19124,6 +19124,9 @@ var Node = function (_React$Component) {
             this.nodeCircle.addEventListener('mouseover', function () {
                 return _this2.props.onMouseover(_this2.props.data);
             });
+            this.nodeCircle.addEventListener('mouseout', function () {
+                return _this2.props.onMouseover(null);
+            });
             this.nodeCircle.addEventListener('click', function () {
                 return _this2.props.onClick(_this2.props.data);
             });
@@ -19135,6 +19138,9 @@ var Node = function (_React$Component) {
 
             this.nodeCircle.removeEventListener('mouseover', function () {
                 return _this3.props.onMouseover(_this3.props.data);
+            });
+            this.nodeCircle.addEventListener('mouseout', function () {
+                return _this3.props.onMouseover(null);
             });
             this.nodeCircle.addEventListener('click', function () {
                 return _this3.props.onClick(_this3.props.data);
@@ -19180,7 +19186,11 @@ var Dendrogram = function (_React$Component2) {
         key: 'selectNode',
         value: function selectNode(node) {
             // console.log(node)
-            this.setState({ selected: node.leaves() });
+            if (!node) {
+                this.setState({ selected: [] });
+            } else {
+                this.setState({ selected: node.leaves() });
+            }
         }
     }, {
         key: 'render',

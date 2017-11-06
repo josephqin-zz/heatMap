@@ -25,12 +25,14 @@ class Node extends React.Component{
 
     componentDidMount() {
         this.nodeCircle.addEventListener('mouseover', ()=>this.props.onMouseover(this.props.data) );
+        this.nodeCircle.addEventListener('mouseout', ()=>this.props.onMouseover(null) );
         this.nodeCircle.addEventListener('click', ()=>this.props.onClick(this.props.data) );
        
     }
 
     componentWillUnmount(){
         this.nodeCircle.removeEventListener('mouseover', ()=>this.props.onMouseover(this.props.data) );
+        this.nodeCircle.addEventListener('mouseout', ()=>this.props.onMouseover(null) );
         this.nodeCircle.addEventListener('click', ()=>this.props.onClick(this.props.data) );
     }
 
@@ -57,7 +59,8 @@ export default class Dendrogram extends React.Component{
 
     selectNode(node){
     	// console.log(node)
-    	this.setState({selected:node.leaves()})
+      if(!node){this.setState({selected:[]})}
+    	else{this.setState({selected:node.leaves()})}
     }
     
     render(){
