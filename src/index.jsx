@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDom from 'react-dom'
-import Heatmap from './component/Heatmap.jsx'
+import Heatmap from './componentV2/Heatmap.jsx'
 // import tableApp from './reducers'
 // import { Provider } from 'react-redux'
 // import { createStore } from 'redux'

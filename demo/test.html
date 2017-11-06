@@ -5,7 +5,8 @@
   <meta charset="utf-8" />
   <script src='http://d3js.org/d3.v4.js'></script>
   <!-- <script src="https://unpkg.com/redux@latest/dist/redux.min.js"></script> -->
-  <script src='dataset.js'></script>
+  <!-- <script src='dataset.js'></script> -->
+  <script src='dataset2.js'></script>
   <script src='../build/myCode.js'></script>
   <title></title>
 </head>
@@ -13,7 +14,7 @@
 <body>
   <div id="container"></div>
   <script type="text/javascript">
-  var data = d3.hierarchy(rowsDendrogram)
+  // var data = d3.hierarchy(rowsDendrogram)
   
   var hm = heatMap.bindData(dataset).setContainer('container')
   hm()

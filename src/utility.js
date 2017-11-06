@@ -17,6 +17,16 @@ export var dendrogram = function(data,width,height){
     cluster(root);
     return root
 }
+//decouple hierarchy and cluster
+export var createHierarchy = d3.hierarchy
+export var updateCluster = (root,width,height)=>{
+	// let newRoot = root.copy()
+	let cluster = d3.cluster().size([width,height]).separation((a,b)=>a.parent == b.parent?1:1);
+	cluster(root)
+	return root;
+}
+
+
 
 //draw the links from parent to children
 export var drawBraceLine = (node,nodes) => drawLine({y:node.y,x:d3.max(nodes.map((d)=>d.x))},{y:node.y,x:d3.min(nodes.map((d)=>d.x))})+nodes.map((d)=>drawLine({y:node.y,x:d.x},d)).join('')
@@ -25,3 +35,5 @@ export var drawBraceLine = (node,nodes) => drawLine({y:node.y,x:d3.max(nodes.map
 export var scaleBand = (range,domain)=>d3.scaleBand.range(range).domain(domain)
 
 export var colorFn = (values)=>d3.scaleLinear().range(["blue","red"]).domain([d3.max(values),d3.min(values)])
+
+export var colorFnV2 = ()=>d3.scaleLinear().range(["blue","red"]).domain([-10,10])

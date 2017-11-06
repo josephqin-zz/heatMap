@@ -7,7 +7,7 @@ import Heatdata from './Heatdata.jsx'
 const Heatmap = function(props){
 
    const rowDendrogramData = utility.dendrogram(props.dataset.rows,props.height*0.65,props.width*0.20).each(function(n){
-   		 if( n.data.label )n.data.text = props.dataset.values[+n.data.label].compound; 
+   		 if( n.data.label )n.data.text = n.data.label; 
    });
    const colDendrogramData = utility.dendrogram(props.dataset.cols,props.width*0.65,props.height*0.20).each(function(n){
    		 if( n.data.label )n.data.text = n.data.label; 
