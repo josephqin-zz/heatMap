@@ -31,13 +31,61 @@ class Cell extends React.Component{
 
 
 
-const Heatdata = function(props){
+class Heatdata extends React.Component{
+
+	constructor(props){
+		super(props)
+		this.state={startPoints:null,endPoints:null}
+	}
     
-    const cells = props.data.filter((d)=>d.x>=0 && d.y>=0).map((d,index)=>(<Cell key={index} {...d}></Cell>))
+    componentDidMount() {
+        this.canvas.addEventListener('mousedown', this.startDraw.bind(this) );
+        this.canvas.addEventListener('mousemove', this.drawing.bind(this) );
+        this.canvas.addEventListener('mouseup', this.endDraw.bind(this) );
+    }
 
+    componentWillUnmount(){
+        this.canvas.removeEventListener('mousedown', this.startDraw.bind(this) );
+        this.canvas.removeEventListener('mousemove', this.drawing.bind(this) );
+        this.canvas.removeEventListener('mouseup', this.endDraw.bind(this) );
+        
+    }
 
-    return (<g transform={props.transform}>{cells}</g>)
+    startDraw(e){
+    	this.setState({startPoints:{x:e.pageX,y:e.pageY}})
+    	
+    	e.stopPropagation()
+        e.preventDefault()
+    }
 
+    drawing(e){
+    	this.setState({endPoints:{x:e.pageX,y:e.pageY}})
+    	e.stopPropagation()
+        e.preventDefault()
+    }
+
+    endDraw(e){
+    	this.setState({startPoints:null,endPoints:null})
+    	e.stopPropagation()
+        e.preventDefault()
+    } 
+
+    render(){
+    	const cells = this.props.data.filter((d)=>d.x>=0 && d.y>=0).map((d,index)=>(<Cell key={index} {...d}></Cell>))
+	    var line = null
+	    if( this.state.startPoints !== null && this.state.endPoints !== null ){
+	    	line = (<path d={utility.drawRectV2(this.state.startPoints,this.state.endPoints)} style={linksStyle} />)
+	    }
+	    return (
+	    		<g>
+		    	    <g ref={ (ref)=>this.canvas=ref } transform={this.props.transform}>
+		    	        {cells}
+		    	    </g>
+	    			{line}
+	    		</g>
+	    		)
+    }
+    
 
 }
 

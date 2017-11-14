@@ -15,7 +15,7 @@
   <div id="container"></div>
   <script type="text/javascript">
   
-  //data should be like this structur
+
   var dataset = {
       rows:rows,
       cols:cols,
@@ -23,16 +23,9 @@
       colName:groups,
       rowName:metabo}
   
-  
-  var hm = heatMap
-           .bindData(dataset)
-           .setContainer('container')//just need pass the div id
-           .setHeight(1500)
-           .setWidth(1500)
-  
-  //call the fun to render map
+  var hm = heatMap.bindData(dataset).setContainer('container').setHeight(1500).setWidth(1500)
   hm()
-  //use hm.remove() to clean;
+  //hm.remove();
 
               
   </script>

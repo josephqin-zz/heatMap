@@ -29,15 +29,16 @@ class Heatmap extends React.Component{
 
    render(){
       const rowDendrogramData = utility.updateCluster(this.state.rowDendrogramData,this.props.height*0.65,this.props.width*0.20).each((n)=>{
-          if( n.data.label >= 0 )n.data.text = this.props.dataset.metabo[+n.data.label]; 
+          if( n.data.label >= 0 )n.data.text = this.props.dataset.rowName[+n.data.label]; 
       });
-      const colDendrogramData = utility.updateCluster(this.state.colDendrogramData,this.props.width*0.65,this.props.height*0.20).each(function(n){
-          if( n.data.label >= 0 )n.data.text = n.data.label; 
+      const colDendrogramData = utility.updateCluster(this.state.colDendrogramData,this.props.width*0.65,this.props.height*0.20).each((n)=>{
+          if( n.data.label >= 0 )n.data.text = this.props.dataset.colName[+n.data.label]; 
       });
       const xMap = colDendrogramData.leaves().reduce((acc,d)=>{ acc[d.data.label]=d.x;return acc},{})
       const yMap = rowDendrogramData.leaves().reduce((acc,d)=>{ acc[+d.data.label]=this.props.height*0.65-d.x;return acc},{})
-   
-      const color = utility.colorFnV2();
+      const values = this.props.dataset.values.reduce((acc,d)=>[...acc,...d],[])
+      const color = utility.colorFn(values);
+      
       const cellHeight = this.props.height*0.65/rowDendrogramData.leaves().length;
       const cellWidth = this.props.width*0.65/colDendrogramData.leaves().length;
       const cellsData= this.props.dataset.values.reduce((acc,d,index)=>[...acc,...d.map((t,i)=>({width:cellWidth,height:cellHeight,x:xMap[i],y:yMap[index],bgColor:color(t)}))],[])

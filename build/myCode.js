@@ -7157,9 +7157,9 @@ module.exports = canDefineProperty;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+   value: true
 });
-exports.colorFnV2 = exports.colorFn = exports.scaleBand = exports.drawBraceLine = exports.updateCluster = exports.createHierarchy = exports.dendrogram = exports.createArray = exports.pagination = exports.drawLine = exports.drawRect = exports.drawCircle = exports.tranSlate = undefined;
+exports.colorFnV3 = exports.colorFnV2 = exports.colorFn = exports.scaleBand = exports.drawBraceLine = exports.updateCluster = exports.createHierarchy = exports.dendrogram = exports.createArray = exports.pagination = exports.drawRectV2 = exports.drawLine = exports.drawRect = exports.drawCircle = exports.tranSlate = undefined;
 
 var _d = __webpack_require__(550);
 
@@ -7168,68 +7168,76 @@ var d3 = _interopRequireWildcard(_d);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var tranSlate = exports.tranSlate = function tranSlate(x, y) {
-	return 'translate(' + x + ',' + y + ')';
+   return 'translate(' + x + ',' + y + ')';
 };
 var drawCircle = exports.drawCircle = function drawCircle(radius) {
-	return 'M ' + (0 - radius) + ' ' + 0 + ' a ' + radius + ' ' + radius + ', 0, 1, 0, ' + radius * 2 + ' ' + 0 + ' ' + 'a ' + radius + ' ' + radius + ', 0, 1, 0, ' + -radius * 2 + ' ' + 0;
+   return 'M ' + (0 - radius) + ' ' + 0 + ' a ' + radius + ' ' + radius + ', 0, 1, 0, ' + radius * 2 + ' ' + 0 + ' ' + 'a ' + radius + ' ' + radius + ', 0, 1, 0, ' + -radius * 2 + ' ' + 0;
 };
 var drawRect = exports.drawRect = function drawRect(width, height) {
-	return 'M' + (0 - width / 2) + ',' + (0 - height / 2) + ' h ' + width + ' v ' + height + ' h ' + (0 - width) + ' Z ';
+   return 'M' + (0 - width / 2) + ',' + (0 - height / 2) + ' h ' + width + ' v ' + height + ' h ' + (0 - width) + ' Z ';
 };
-var drawLine = exports.drawLine = function drawLine(sourse, target) {
-	return 'M' + sourse.x + ',' + sourse.y + ' L ' + target.x + ',' + target.y;
+var drawLine = exports.drawLine = function drawLine(source, target) {
+   return 'M' + source.x + ',' + source.y + ' L ' + target.x + ',' + target.y;
 };
-
+var drawRectV2 = exports.drawRectV2 = function drawRectV2(source, target) {
+   return 'M' + source.x + ',' + source.y + ' L ' + target.x + ',' + source.y + ' L ' + target.x + ',' + target.y + ' L ' + source.x + ',' + target.y + ' Z';
+};
 //oldRange,Maxlines,step => newRange
 var pagination = exports.pagination = function pagination(oldRange, boundry, step) {
-	return oldRange.length < boundry && oldRange[0] + step >= 0 && oldRange[oldRange.length - 1] + step <= boundry ? oldRange.map(function (d) {
-		return d + step;
-	}) : oldRange;
+   return oldRange.length < boundry && oldRange[0] + step >= 0 && oldRange[oldRange.length - 1] + step <= boundry ? oldRange.map(function (d) {
+      return d + step;
+   }) : oldRange;
 };
 var createArray = exports.createArray = d3.range;
 
 //dendrogram
 var dendrogram = exports.dendrogram = function dendrogram(data, width, height) {
-	var root = d3.hierarchy(data);
-	var cluster = d3.cluster().size([width, height]).separation(function (a, b) {
-		return a.parent == b.parent ? 1 : 1;
-	});
-	cluster(root);
-	return root;
+   var root = d3.hierarchy(data);
+   var cluster = d3.cluster().size([width, height]).separation(function (a, b) {
+      return a.parent == b.parent ? 1 : 1;
+   });
+   cluster(root);
+   return root;
 };
 //decouple hierarchy and cluster
 var createHierarchy = exports.createHierarchy = d3.hierarchy;
 var updateCluster = exports.updateCluster = function updateCluster(root, width, height) {
-	// let newRoot = root.copy()
-	var cluster = d3.cluster().size([width, height]).separation(function (a, b) {
-		return a.parent == b.parent ? 1 : 1;
-	});
-	cluster(root);
-	return root;
+   // let newRoot = root.copy()
+   var cluster = d3.cluster().size([width, height]).separation(function (a, b) {
+      return a.parent == b.parent ? 1 : 1;
+   });
+   cluster(root);
+   return root;
 };
 
 //draw the links from parent to children
 var drawBraceLine = exports.drawBraceLine = function drawBraceLine(node, nodes) {
-	return drawLine({ y: node.y, x: d3.max(nodes.map(function (d) {
-			return d.x;
-		})) }, { y: node.y, x: d3.min(nodes.map(function (d) {
-			return d.x;
-		})) }) + nodes.map(function (d) {
-		return drawLine({ y: node.y, x: d.x }, d);
-	}).join('');
+   return drawLine({ y: node.y, x: d3.max(nodes.map(function (d) {
+         return d.x;
+      })) }, { y: node.y, x: d3.min(nodes.map(function (d) {
+         return d.x;
+      })) }) + nodes.map(function (d) {
+      return drawLine({ y: node.y, x: d.x }, d);
+   }).join('');
 };
 
 //scaleBand
 var scaleBand = exports.scaleBand = function scaleBand(range, domain) {
-	return d3.scaleBand.range(range).domain(domain);
+   return d3.scaleBand.range(range).domain(domain);
 };
 
 var colorFn = exports.colorFn = function colorFn(values) {
-	return d3.scaleLinear().range(["blue", "red"]).domain([d3.max(values), d3.min(values)]);
+   return d3.scaleLinear().range(["blue", "white", "red"]).domain([d3.min(values), 0, d3.max(values)]);
 };
 
 var colorFnV2 = exports.colorFnV2 = function colorFnV2() {
-	return d3.scaleLinear().range(["blue", "red"]).domain([-10, 10]);
+   return d3.scaleLinear().range(["blue", "red"]).domain([-10, 10]);
+};
+
+var colorFnV3 = exports.colorFnV3 = function colorFnV3(v) {
+   var positiveColor = d3.scaleLinear().range(["white", "red"]).domain([0, 10]);
+   var negtiveColor = d3.scaleLinear().range(["white", "blue"]).domain([0, 10]);
+   return v > 0 ? positiveColor(Math.log10(v)) : negtiveColor(Math.log10(0 - v));
 };
 
 /***/ }),
@@ -19005,10 +19013,10 @@ var Heatmap = function (_React$Component) {
          var _this2 = this;
 
          var rowDendrogramData = utility.updateCluster(this.state.rowDendrogramData, this.props.height * 0.65, this.props.width * 0.20).each(function (n) {
-            if (n.data.label >= 0) n.data.text = _this2.props.dataset.metabo[+n.data.label];
+            if (n.data.label >= 0) n.data.text = _this2.props.dataset.rowName[+n.data.label];
          });
          var colDendrogramData = utility.updateCluster(this.state.colDendrogramData, this.props.width * 0.65, this.props.height * 0.20).each(function (n) {
-            if (n.data.label >= 0) n.data.text = n.data.label;
+            if (n.data.label >= 0) n.data.text = _this2.props.dataset.colName[+n.data.label];
          });
          var xMap = colDendrogramData.leaves().reduce(function (acc, d) {
             acc[d.data.label] = d.x;return acc;
@@ -19016,8 +19024,11 @@ var Heatmap = function (_React$Component) {
          var yMap = rowDendrogramData.leaves().reduce(function (acc, d) {
             acc[+d.data.label] = _this2.props.height * 0.65 - d.x;return acc;
          }, {});
+         var values = this.props.dataset.values.reduce(function (acc, d) {
+            return [].concat(_toConsumableArray(acc), _toConsumableArray(d));
+         }, []);
+         var color = utility.colorFn(values);
 
-         var color = utility.colorFnV2();
          var cellHeight = this.props.height * 0.65 / rowDendrogramData.leaves().length;
          var cellWidth = this.props.width * 0.65 / colDendrogramData.leaves().length;
          var cellsData = this.props.dataset.values.reduce(function (acc, d, index) {
@@ -19292,20 +19303,85 @@ var Cell = function (_React$Component) {
     return Cell;
 }(_react2.default.Component);
 
-var Heatdata = function Heatdata(props) {
+var Heatdata = function (_React$Component2) {
+    _inherits(Heatdata, _React$Component2);
 
-    var cells = props.data.filter(function (d) {
-        return d.x >= 0 && d.y >= 0;
-    }).map(function (d, index) {
-        return _react2.default.createElement(Cell, _extends({ key: index }, d));
-    });
+    function Heatdata(props) {
+        _classCallCheck(this, Heatdata);
 
-    return _react2.default.createElement(
-        'g',
-        { transform: props.transform },
-        cells
-    );
-};
+        var _this3 = _possibleConstructorReturn(this, (Heatdata.__proto__ || Object.getPrototypeOf(Heatdata)).call(this, props));
+
+        _this3.state = { startPoints: null, endPoints: null };
+        return _this3;
+    }
+
+    _createClass(Heatdata, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.canvas.addEventListener('mousedown', this.startDraw.bind(this));
+            this.canvas.addEventListener('mousemove', this.drawing.bind(this));
+            this.canvas.addEventListener('mouseup', this.endDraw.bind(this));
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            this.canvas.removeEventListener('mousedown', this.startDraw.bind(this));
+            this.canvas.removeEventListener('mousemove', this.drawing.bind(this));
+            this.canvas.removeEventListener('mouseup', this.endDraw.bind(this));
+        }
+    }, {
+        key: 'startDraw',
+        value: function startDraw(e) {
+            this.setState({ startPoints: { x: e.pageX, y: e.pageY } });
+
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }, {
+        key: 'drawing',
+        value: function drawing(e) {
+            this.setState({ endPoints: { x: e.pageX, y: e.pageY } });
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }, {
+        key: 'endDraw',
+        value: function endDraw(e) {
+            this.setState({ startPoints: null, endPoints: null });
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this4 = this;
+
+            var cells = this.props.data.filter(function (d) {
+                return d.x >= 0 && d.y >= 0;
+            }).map(function (d, index) {
+                return _react2.default.createElement(Cell, _extends({ key: index }, d));
+            });
+            var line = null;
+            if (this.state.startPoints !== null && this.state.endPoints !== null) {
+                line = _react2.default.createElement('path', { d: utility.drawRectV2(this.state.startPoints, this.state.endPoints), style: linksStyle });
+            }
+            return _react2.default.createElement(
+                'g',
+                null,
+                _react2.default.createElement(
+                    'g',
+                    { ref: function ref(_ref2) {
+                            return _this4.canvas = _ref2;
+                        }, transform: this.props.transform },
+                    cells
+                ),
+                line
+            );
+        }
+    }]);
+
+    return Heatdata;
+}(_react2.default.Component);
 
 exports.default = Heatdata;
 
