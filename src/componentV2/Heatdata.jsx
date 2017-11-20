@@ -65,7 +65,10 @@ class Heatdata extends React.Component{
     }
 
     endDraw(e){
-    	this.setState({startPoints:null,endPoints:null})
+    	this.setState((preState)=>{
+            this.props.zoomHandler(preState);
+            return {startPoints:null,endPoints:null}
+        })
     	e.stopPropagation()
         e.preventDefault()
     } 
@@ -76,14 +79,14 @@ class Heatdata extends React.Component{
 	    if( this.state.startPoints !== null && this.state.endPoints !== null ){
 	    	line = (<path d={utility.drawRectV2(this.state.startPoints,this.state.endPoints)} style={linksStyle} />)
 	    }
-	    return (
-	    		<g>
-		    	    <g ref={ (ref)=>this.canvas=ref } transform={this.props.transform}>
-		    	        {cells}
-		    	    </g>
-	    			{line}
-	    		</g>
-	    		)
+	    return (<g>
+                    <g ref={ (ref)=>this.canvas=ref } transform={this.props.transform} clipPath={this.props.clipPathURL}>
+                        <g transform={this.props.zoomTransform}>
+    		    	        {cells}
+    		    	    </g>
+                    </g>    
+	    		 {line}
+	    		</g>)
     }
     
 

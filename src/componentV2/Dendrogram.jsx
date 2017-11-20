@@ -67,7 +67,11 @@ export default class Dendrogram extends React.Component{
 		
 		const nodes = this.props.data.descendants().map((node,index)=>(<Node key={index} onMouseover={this.selectNode} onClick={this.props.onClick} data={node} frame={this.props.frame} selected={this.state.selected.includes(node)?true:false}/>))
     
-		return (<g transform={this.props.transform}>{ nodes }</g>)
+		return (<g transform={this.props.transform} clipPath={this.props.clipPathURL}>
+                <g>
+                { nodes }
+                </g>
+            </g>)
 
     }
     

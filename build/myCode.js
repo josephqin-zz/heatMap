@@ -18982,7 +18982,8 @@ var Heatmap = function (_React$Component) {
 
       _this.state = {
          rowDendrogramData: utility.createHierarchy(_this.props.dataset.rows),
-         colDendrogramData: utility.createHierarchy(_this.props.dataset.cols)
+         colDendrogramData: utility.createHierarchy(_this.props.dataset.cols),
+         zoomTransform: null
       };
       _this.changeRowNode = _this.changeRowNode.bind(_this);
       _this.changeColNode = _this.changeColNode.bind(_this);
@@ -19008,21 +19009,49 @@ var Heatmap = function (_React$Component) {
          }
       }
    }, {
-      key: 'render',
-      value: function render() {
+      key: 'zoomHandler',
+      value: function zoomHandler(selectedBox) {
          var _this2 = this;
 
+         var coordinationX = Object.values(selectedBox).map(function (d) {
+            return d.x - _this2.props.width * 0.20;
+         }).sort(function (a, b) {
+            return a - b;
+         });
+         var coordinationY = Object.values(selectedBox).map(function (d) {
+            return d.y - _this2.props.height * 0.20;
+         }).sort(function (a, b) {
+            return a - b;
+         });
+         console.log(coordinationX);
+         console.log(coordinationY);
+         this.setState(function (prestate) {
+
+            var Ratio = Math.min(_this2.props.width * 0.65 / coordinationX.reduce(function (acc, d) {
+               return d - acc;
+            }, 0), _this2.props.height * 0.65 / coordinationY.reduce(function (acc, d) {
+               return d - acc;
+            }, 0));
+            console.log(Ratio);
+            return { zoomTransform: d3.zoomIdentity.translate(0 - coordinationX[0] * Ratio, 0 - coordinationY[0] * Ratio).scale(Ratio).toString() };
+         });
+      }
+   }, {
+      key: 'render',
+      value: function render() {
+         var _this3 = this;
+
          var rowDendrogramData = utility.updateCluster(this.state.rowDendrogramData, this.props.height * 0.65, this.props.width * 0.20).each(function (n) {
-            if (n.data.label >= 0) n.data.text = _this2.props.dataset.rowName[+n.data.label];
+            if (n.data.label >= 0) n.data.text = _this3.props.dataset.rowName[+n.data.label];
          });
          var colDendrogramData = utility.updateCluster(this.state.colDendrogramData, this.props.width * 0.65, this.props.height * 0.20).each(function (n) {
-            if (n.data.label >= 0) n.data.text = _this2.props.dataset.colName[+n.data.label];
+            if (n.data.label >= 0) n.data.text = _this3.props.dataset.colName[+n.data.label];
          });
          var xMap = colDendrogramData.leaves().reduce(function (acc, d) {
             acc[d.data.label] = d.x;return acc;
          }, {});
          var yMap = rowDendrogramData.leaves().reduce(function (acc, d) {
-            acc[+d.data.label] = _this2.props.height * 0.65 - d.x;return acc;
+            acc[+d.data.label] = _this3.props.height * 0.65 - d.x;return acc;
          }, {});
          var values = this.props.dataset.values.reduce(function (acc, d) {
             return [].concat(_toConsumableArray(acc), _toConsumableArray(d));
@@ -19042,9 +19071,23 @@ var Heatmap = function (_React$Component) {
          return _react2.default.createElement(
             'svg',
             { width: this.props.width, height: this.props.height },
-            _react2.default.createElement(_Heatdata2.default, { data: cellsData, transform: utility.tranSlate(this.props.width * 0.20, this.props.height * 0.20) }),
-            _react2.default.createElement(_Dendrogram2.default, { key: 0, data: colDendrogramData, transform: utility.tranSlate(this.props.width * 0.20, 0), frame: colFrame, onClick: this.changeColNode }),
-            _react2.default.createElement(_Dendrogram2.default, { key: 1, data: rowDendrogramData, transform: utility.tranSlate(0, this.props.height * 0.85) + 'rotate(-90)', frame: rowFrame, onClick: this.changeRowNode })
+            _react2.default.createElement(
+               'defs',
+               null,
+               _react2.default.createElement(
+                  'clipPath',
+                  { id: 'heatDataBox' },
+                  _react2.default.createElement('rect', { x: 0, y: 0, height: this.props.height * 0.65, width: this.props.width * 0.65 })
+               ),
+               _react2.default.createElement(
+                  'clipPath',
+                  { id: 'denBox' },
+                  _react2.default.createElement('rect', { x: 0, y: 0, height: this.props.height * 0.20, width: this.props.width * 0.65 })
+               )
+            ),
+            _react2.default.createElement(_Heatdata2.default, { data: cellsData, transform: utility.tranSlate(this.props.width * 0.20, this.props.height * 0.20), clipPathURL: 'url(#heatDataBox)', zoomHandler: this.zoomHandler.bind(this), zoomTransform: this.state.zoomTransform }),
+            _react2.default.createElement(_Dendrogram2.default, { key: 0, data: colDendrogramData, transform: utility.tranSlate(this.props.width * 0.20, 0), frame: colFrame, onClick: this.changeColNode, clipPathURL: 'url(#denBox)' }),
+            _react2.default.createElement(_Dendrogram2.default, { key: 1, data: rowDendrogramData, transform: utility.tranSlate(0, this.props.height * 0.85) + 'rotate(-90)', frame: rowFrame, onClick: this.changeRowNode, clipPathURL: 'url(#denBox)' })
          );
       }
    }]);
@@ -19214,8 +19257,12 @@ var Dendrogram = function (_React$Component2) {
 
             return _react2.default.createElement(
                 'g',
-                { transform: this.props.transform },
-                nodes
+                { transform: this.props.transform, clipPath: this.props.clipPathURL },
+                _react2.default.createElement(
+                    'g',
+                    null,
+                    nodes
+                )
             );
         }
     }]);
@@ -19347,14 +19394,19 @@ var Heatdata = function (_React$Component2) {
     }, {
         key: 'endDraw',
         value: function endDraw(e) {
-            this.setState({ startPoints: null, endPoints: null });
+            var _this4 = this;
+
+            this.setState(function (preState) {
+                _this4.props.zoomHandler(preState);
+                return { startPoints: null, endPoints: null };
+            });
             e.stopPropagation();
             e.preventDefault();
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this4 = this;
+            var _this5 = this;
 
             var cells = this.props.data.filter(function (d) {
                 return d.x >= 0 && d.y >= 0;
@@ -19371,9 +19423,13 @@ var Heatdata = function (_React$Component2) {
                 _react2.default.createElement(
                     'g',
                     { ref: function ref(_ref2) {
-                            return _this4.canvas = _ref2;
-                        }, transform: this.props.transform },
-                    cells
+                            return _this5.canvas = _ref2;
+                        }, transform: this.props.transform, clipPath: this.props.clipPathURL },
+                    _react2.default.createElement(
+                        'g',
+                        { transform: this.props.zoomTransform },
+                        cells
+                    )
                 ),
                 line
             );
