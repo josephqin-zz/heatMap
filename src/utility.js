@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 
 
 export var tranSlate = (x,y)=>'translate('+x+','+y+')';
+export var tranScale = (x,y)=>'scale('+x+','+y+')';
 export var drawCircle = (radius) => 'M '+(0-radius)+' '+0+' a '+radius+' '+radius+', 0, 1, 0, '+(radius*2)+' '+0+' '+'a '+radius+' '+radius+', 0, 1, 0, '+(-radius*2)+' '+0;
 export var drawRect = (width,height) => 'M'+(0-width/2)+','+(0-height/2)+' h '+width+' v '+height+' h '+(0-width)+' Z ';
 export var drawLine = (source,target) => 'M'+source.x+','+source.y+' L '+target.x+','+target.y;

@@ -11,7 +11,7 @@ var config = {
     path:OUTPUT,
     library:'heatMap',
     libraryTarget:'umd',
-    filename:'myCode.js'
+    filename:'heatMap.js'
   },
   module: {
     loaders: [{
