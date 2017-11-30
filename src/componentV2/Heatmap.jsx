@@ -45,7 +45,7 @@ class Heatmap extends React.Component{
       const rowDendrogramData = utility.updateCluster(this.state.rowDendrogramData,this.props.height*0.65,this.props.width*0.20).each((n)=>{
           if( n.data.label >= 0 )n.data.text = this.props.dataset.rowName[+n.data.label]; 
       });
-      const colDendrogramData = utility.updateCluster(this.state.colDendrogramData,this.props.width*0.65,this.props.height*0.20).each((n)=>{
+      const colDendrogramData = utility.updateCluster(this.state.colDendrogramData,this.props.width*0.65,this.props.height*0.10).each((n)=>{
           if( n.data.label >= 0 )n.data.text = this.props.dataset.colName[+n.data.label]; 
       });
       const xMap = colDendrogramData.leaves().reduce((acc,d)=>{ acc[d.data.label]=d.x;return acc},{})
@@ -72,9 +72,9 @@ class Heatmap extends React.Component{
                        <rect x={0} y={0} height={this.props.width} width={this.props.height*0.65}/>
                     </clipPath>                     
                   </defs>
-                  <Heatdata data={cellsData} transform={utility.tranSlate(this.props.width*0.20,this.props.height*0.20)} clipPathURL={'url(#heatDataBox)'} zoomHandler={this.zoomHandler.bind(this)} zoomTransform={utility.tranSlate(0-x,0-y)+utility.tranScale(xRatio,yRatio)}/>
+                  <Heatdata data={cellsData} transform={utility.tranSlate(this.props.width*0.20,this.props.height*0.10)} clipPathURL={'url(#heatDataBox)'} zoomHandler={this.zoomHandler.bind(this)} zoomTransform={utility.tranSlate(0-x,0-y)+utility.tranScale(xRatio,yRatio)}/>
                   <Dendrogram key={0} data={colDendrogramData} transform={utility.tranSlate(this.props.width*0.20,0)} frame={colFrame} onClick={this.changeColNode} clipPathURL={'url(#coldenBox)'} zoomTransform={utility.tranSlate(0-x,0)+utility.tranScale(xRatio,1)}/>
-                  <Dendrogram key={1} data={rowDendrogramData} transform={utility.tranSlate(0,this.props.height*0.85)+'rotate(-90)'} frame={rowFrame} onClick={this.changeRowNode} clipPathURL={'url(#rowdenBox)'}  zoomTransform={utility.tranSlate(0-((this.props.height*0.65*(yRatio-1))-y),0)+utility.tranScale(yRatio,1)}/>
+                  <Dendrogram key={1} data={rowDendrogramData} transform={utility.tranSlate(0,this.props.height*0.75)+'rotate(-90)'} frame={rowFrame} onClick={this.changeRowNode} clipPathURL={'url(#rowdenBox)'}  zoomTransform={utility.tranSlate(0-((this.props.height*0.65*(yRatio-1))-y),0)+utility.tranScale(yRatio,1)}/>
                </svg>
               )
    }
