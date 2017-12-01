@@ -5,6 +5,7 @@ import * as utility from '../utility'
 const linksStyle = {stroke:'#000000',strokeWidth:'1px',fill:'none'}
 const textStyle = {textAnchor:'start',dominantBaseline:'middle',fill:'#000000'};
 
+//draw transparent fram for hightligh the row or col
 const Cellframe = function(props){
 
 	  const fontSize = Math.min(Math.floor(props.frame.width)*1,16)
@@ -19,7 +20,7 @@ const Cellframe = function(props){
 
 } 
 
-
+//draw the each node in d3.hierarch structure
 class Node extends React.Component{
     
 
@@ -68,7 +69,7 @@ export default class Dendrogram extends React.Component{
 		const nodes = this.props.data.descendants().map((node,index)=>(<Node key={index} onMouseover={this.selectNode} onClick={this.props.onClick} data={node} frame={this.props.frame} selected={this.state.selected.includes(node)?true:false}/>))
     
 		return (<g transform={this.props.transform}>
-                <g  clipPath={this.props.clipPathURL}>
+                <g clipPath={this.props.clipPathURL}>
                 <g transform={this.props.zoomTransform}>
                 { nodes }
                 </g>

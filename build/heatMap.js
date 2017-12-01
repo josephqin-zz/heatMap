@@ -18973,7 +18973,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // root module for heatMap.js
 
 var Heatmap = function (_React$Component) {
    _inherits(Heatmap, _React$Component);
@@ -18993,6 +18993,9 @@ var Heatmap = function (_React$Component) {
       return _this;
    }
 
+   //if node is choose to show the children nodes and reset select behavior 
+
+
    _createClass(Heatmap, [{
       key: 'changeRowNode',
       value: function changeRowNode(node) {
@@ -19011,6 +19014,9 @@ var Heatmap = function (_React$Component) {
             this.setState({ colDendrogramData: node, zoomTransform: { x: 0, y: 0, xRatio: 1, yRatio: 1 } });
          }
       }
+
+      //set transform according to the seclected aear(selectedBox=[{x_start,y_start},{x_end,y_end}])
+
    }, {
       key: 'zoomHandler',
       value: function zoomHandler(selectedBox) {
@@ -19050,6 +19056,7 @@ var Heatmap = function (_React$Component) {
          var colDendrogramData = utility.updateCluster(this.state.colDendrogramData, this.props.width * 0.65, this.props.height * 0.10).each(function (n) {
             if (n.data.label >= 0) n.data.text = _this3.props.dataset.colName[+n.data.label];
          });
+         //dendrogram structure
          var xMap = colDendrogramData.leaves().reduce(function (acc, d) {
             acc[d.data.label] = d.x;return acc;
          }, {});
@@ -19060,7 +19067,7 @@ var Heatmap = function (_React$Component) {
             return [].concat(_toConsumableArray(acc), _toConsumableArray(d));
          }, []);
          var color = utility.colorFn(values);
-
+         //heatData cell parameters
          var cellHeight = this.props.height * 0.65 / rowDendrogramData.leaves().length;
          var cellWidth = this.props.width * 0.65 / colDendrogramData.leaves().length;
          var cellsData = this.props.dataset.values.reduce(function (acc, d, index) {
@@ -19068,17 +19075,20 @@ var Heatmap = function (_React$Component) {
                return { width: cellWidth, height: cellHeight, x: xMap[i], y: yMap[index], bgColor: color(t) };
             })));
          }, []);
+         //highlight Frame
          var colFrame = { width: cellWidth, height: this.props.height * 0.65, fill: 'none' };
-         var rowFrame = { width: cellHeight, height: this.props.width * 0.65, fill: 'none' };
-         var _state$zoomTransform = this.state.zoomTransform,
+         var rowFrame = { width: cellHeight, height: this.props.width * 0.65, fill: 'none'
+            //zoom out according to the selected Area
+         };var _state$zoomTransform = this.state.zoomTransform,
              x = _state$zoomTransform.x,
              y = _state$zoomTransform.y,
              xRatio = _state$zoomTransform.xRatio,
              yRatio = _state$zoomTransform.yRatio;
 
+
          return _react2.default.createElement(
             'svg',
-            { width: this.props.width, height: this.props.height },
+            { width: this.props.width, height: this.props.height, id: this.props.divID },
             _react2.default.createElement(
                'defs',
                null,
@@ -19098,9 +19108,9 @@ var Heatmap = function (_React$Component) {
                   _react2.default.createElement('rect', { x: 0, y: 0, height: this.props.width, width: this.props.height * 0.65 })
                )
             ),
-            _react2.default.createElement(_Heatdata2.default, { data: cellsData, transform: utility.tranSlate(this.props.width * 0.20, this.props.height * 0.10), clipPathURL: 'url(#heatDataBox)', zoomHandler: this.zoomHandler.bind(this), zoomTransform: utility.tranSlate(0 - x, 0 - y) + utility.tranScale(xRatio, yRatio) }),
-            _react2.default.createElement(_Dendrogram2.default, { key: 0, data: colDendrogramData, transform: utility.tranSlate(this.props.width * 0.20, 0), frame: colFrame, onClick: this.changeColNode, clipPathURL: 'url(#coldenBox)', zoomTransform: utility.tranSlate(0 - x, 0) + utility.tranScale(xRatio, 1) }),
-            _react2.default.createElement(_Dendrogram2.default, { key: 1, data: rowDendrogramData, transform: utility.tranSlate(0, this.props.height * 0.75) + 'rotate(-90)', frame: rowFrame, onClick: this.changeRowNode, clipPathURL: 'url(#rowdenBox)', zoomTransform: utility.tranSlate(0 - (this.props.height * 0.65 * (yRatio - 1) - y), 0) + utility.tranScale(yRatio, 1) })
+            _react2.default.createElement(_Heatdata2.default, { data: cellsData, transform: utility.tranSlate(this.props.width * 0.20, this.props.height * 0.10), clipPathURL: 'url(#' + this.props.divID + ':#heatDataBox)', zoomHandler: this.zoomHandler.bind(this), zoomTransform: utility.tranSlate(0 - x, 0 - y) + utility.tranScale(xRatio, yRatio) }),
+            _react2.default.createElement(_Dendrogram2.default, { key: 0, data: colDendrogramData, transform: utility.tranSlate(this.props.width * 0.20, 0), frame: colFrame, onClick: this.changeColNode, clipPathURL: 'url(#' + this.props.divID + ':#coldenBox)', zoomTransform: utility.tranSlate(0 - x, 0) + utility.tranScale(xRatio, 1) }),
+            _react2.default.createElement(_Dendrogram2.default, { key: 1, data: rowDendrogramData, transform: utility.tranSlate(0, this.props.height * 0.75) + 'rotate(-90)', frame: rowFrame, onClick: this.changeRowNode, clipPathURL: 'url(#' + this.props.divID + ':#rowdenBox)', zoomTransform: utility.tranSlate(0 - (this.props.height * 0.65 * (yRatio - 1) - y), 0) + utility.tranScale(yRatio, 1) })
          );
       }
    }]);
@@ -19158,6 +19168,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var linksStyle = { stroke: '#000000', strokeWidth: '1px', fill: 'none' };
 var textStyle = { textAnchor: 'start', dominantBaseline: 'middle', fill: '#000000' };
 
+//draw transparent fram for hightligh the row or col
 var Cellframe = function Cellframe(props) {
 
     var fontSize = Math.min(Math.floor(props.frame.width) * 1, 16);
@@ -19173,6 +19184,8 @@ var Cellframe = function Cellframe(props) {
         )
     );
 };
+
+//draw the each node in d3.hierarch structure
 
 var Node = function (_React$Component) {
     _inherits(Node, _React$Component);
@@ -19324,6 +19337,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var linksStyle = { stroke: '#000000', strokeWidth: '1px', fill: 'none' };
 var textStyle = { textAnchor: 'start', dominantBaseline: 'middle', fill: '#000000' };
+
+//rectangular cell
 
 var Cell = function (_React$Component) {
     _inherits(Cell, _React$Component);
@@ -19492,7 +19507,7 @@ var width = 1000,
 var renderModule = function renderModule() {
 	// let store = createStore(tableApp,{rawData:dataset,colList:dataset.reduce((acc,d)=>[...acc,...Object.keys(d)],[]).filter((d,i,self)=>self.indexOf(d)===i)})     
 
-	_reactDom2.default.render(_react2.default.createElement(_Heatmap2.default, { width: width, height: height, dataset: dataset }), document.getElementById(containerID));
+	_reactDom2.default.render(_react2.default.createElement(_Heatmap2.default, { width: width, height: height, dataset: dataset, divID: containerID }), document.getElementById(containerID));
 };
 
 renderModule.setContainer = function (data) {

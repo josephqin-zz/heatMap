@@ -17,7 +17,7 @@ var renderModule = function(){
 // let store = createStore(tableApp,{rawData:dataset,colList:dataset.reduce((acc,d)=>[...acc,...Object.keys(d)],[]).filter((d,i,self)=>self.indexOf(d)===i)})     
 
 ReactDom.render(
-	<Heatmap width={width} height={height} dataset={dataset} />,
+	<Heatmap width={width} height={height} dataset={dataset} divID={containerID}/>,
 	document.getElementById(containerID)
 	)
 

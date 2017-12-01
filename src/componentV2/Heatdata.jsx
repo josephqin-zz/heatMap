@@ -4,6 +4,7 @@ import * as utility from '../utility'
 const linksStyle = {stroke:'#000000',strokeWidth:'1px',fill:'none'}
 const textStyle = {textAnchor:'start',dominantBaseline:'middle',fill:'#000000'};
 
+//rectangular cell
 class Cell extends React.Component{
     
     // componentDidMount() {
